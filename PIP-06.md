@@ -47,6 +47,10 @@ Field semantics map one-to-one onto the Proof object of [PIP-02](PIP-02.md); the
 - A receiver SHOULD verify every DLEQ offline, then **claim** the token by swapping every proof for fresh ones it alone knows (PIP-02 `/v1/swap`). Until the swap lands, the sender still holds spendable copies — possession of the string is not ownership; the swap is.
 - Producers SHOULD emit proofs in descending amount order within a keyset; parsers MUST NOT rely on order.
 
+### Limits
+
+A token string is untrusted input. Parsers MUST enforce hard limits before and during decoding, rejecting (not truncating) anything over them. The reference limits: 1 MiB of input, 1024 proofs, 512-character memo, 512-character mint URL; `m` MUST be an `http(s)` URL, `u` MUST match `tip20:<chain_id>:<40-hex address>`, keyset ids MUST be 16 lowercase hex characters, and every hex field MUST be exactly its expected length. Decoding MUST use strict UTF-8 and strict base64url (no padding, no whitespace).
+
 ## Example
 
 A one-proof token for 64 base units on the Moderato dev mint (secret and keys are test values; do not reuse):

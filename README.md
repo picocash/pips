@@ -28,11 +28,11 @@ picocash is private, instant eCash for machine payments: Chaumian blind-signatur
 
 The reference stack ([picocash](https://github.com/picocash/picocash) + [picocash-contracts](https://github.com/picocash/picocash-contracts)) implements every pip, live on Tempo's Moderato testnet. Highlights the specs pin down:
 
-- **Offline verifiability** (PIP-00): every token carries a DLEQ proof, so anyone verifies it against a mint's published keys with no mint round-trip — measured ~45ms mean acceptance in the MPP reference implementation.
+- **Offline verifiability** (PIP-00): every token carries a DLEQ proof, so anyone verifies it against a mint's published keys with no mint round-trip — measured ~45ms mean merchant-side verification in the MPP reference implementation (settlement at the mint follows, by default before success).
 - **The unit is the token contract** (PIP-01): `tip20:<chain_id>:<address>` — keyset keys and ids derive from it, and the mint refuses to run unless the vault's on-chain token binding agrees.
 - **Insert-before-sign / insert-before-pay** (PIP-02/03): no signature and no payout ever exists before the corresponding spend is durably recorded.
-- **The exit guarantee** (PIP-03/04): withdrawals can never be paused; each melt pays out exactly once (`meltPaid`); the exit fee is capped by the vault's committed `maxMeltFee`; raising that cap takes the same public timelock as rotating custody keys.
-- **Proof of liabilities with teeth** (PIP-04): vaults commit at deployment to a solvency-publication policy — miss the attestation interval and the vault stops accepting deposits until the mint publishes again.
+- **The exit guarantee** (PIP-03/04): payouts cannot be paused by the contract (operator liveness is still required); each melt pays out exactly once (`meltPaid`); the exit fee is capped by the vault's committed `maxMeltFee`; raising that cap takes the same public timelock as rotating custody keys.
+- **Attested liabilities with teeth** (PIP-04): outstanding supply is an operator attestation, published on-chain and checkable against the vault balance; vaults commit at deployment to a solvency-publication policy — miss the attestation interval and the vault stops accepting deposits until the mint publishes again.
 - **Challenge-bound credentials** (PIP-05): payment secrets commit to the challenge nonce and realm (`PC-BIND`), so an intercepted credential replays nowhere.
 
 ## Contributing

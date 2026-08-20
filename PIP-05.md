@@ -19,7 +19,7 @@ Agent                         Service                        Mint
   |                               |  <- new proofs / ack ----- |
 ```
 
-The service accepts on offline verification and settles with the mint asynchronously (**accept-then-settle**). The service carries double-spend risk only for the settlement window, bounded by per-challenge amount caps it sets itself.
+The service verifies offline, then settles with the mint by swapping the proofs for ones only it knows. Two settlement modes exist; **settle-first is the default**: the service MUST NOT report the payment as successful until the swap has landed. A service MAY opt into **accept-then-settle** — respond on offline verification and settle afterwards — in which case it knowingly carries double-spend risk for the settlement window, bounded by per-challenge amount caps it sets itself, and MUST label such receipts `settlement: "pending"`.
 
 ## Challenge
 
@@ -70,17 +70,19 @@ serialized as canonical JSON. A credential intercepted in transit is then worthl
 In order, all MUST pass:
 
 1. `challenge_id` known, unexpired, never previously accepted (single-use).
-2. Mint URL and `keyset_id` in the service's allowlist; keyset keys already cached from `/v1/keys`.
+2. Mint URL and `keyset_id` in the service's allowlist; keyset keys already cached from `/v1/keys`; and the **keyset's `unit` equals the challenge's `unit`** — an equal base-unit number in a different TIP-20 token is not payment.
 3. Each proof's secret parses as `PC-BIND` and commits to this challenge's `nonce` and `realm`.
 4. Amounts sum to exactly `amount`; each amount is a valid denomination of the keyset.
 5. **DLEQ verifies** for each proof against the cached keyset key for its denomination ([PIP-00](PIP-00.md) §3).
-6. No duplicate `Y = hash_to_curve(secret)` within the credential or against recently accepted credentials (local cache).
+6. No duplicate `Y = hash_to_curve(secret)` within the credential or against previously accepted credentials.
 
-No network round-trip. This is the sub-100ms path.
+No network round-trip: this is the sub-100ms **verification** path (≈45 ms measured in the reference implementation). It is not the end-to-end latency in settle-first mode, which adds one mint round-trip.
+
+**Replay state.** Checks 1 and 6 are only as good as the store behind them. Marking a challenge paid and recording its `Y`s MUST be a single atomic operation, and in any deployment with more than one service instance that store MUST be shared (a database, not process memory). A process-local cache is acceptable only for a single instance, and it MUST be bounded (evict expired challenges; retain `Y`s at least until the mint has settled them).
 
 ## Receipt & settlement
 
-The service responds with a receipt immediately and settles asynchronously by calling the mint's `/v1/swap` (exchanging the received proofs for fresh ones it owns — this is the double-spend check and the moment of finality) or `/v1/melt`. Receipt shape:
+Settlement is a call to the mint's `/v1/swap` (exchanging the received proofs for fresh ones the service owns — this is the double-spend check and the moment of finality) or `/v1/melt`. In settle-first mode the receipt is returned after that call with `settlement: "settled"`; in accept-then-settle mode it is returned immediately with `settlement: "pending"` and updated later. Receipt shape:
 
 ```jsonc
 {
@@ -93,7 +95,7 @@ The service responds with a receipt immediately and settles asynchronously by ca
 }
 ```
 
-If settlement later fails (double-spend), the service's recourse is service-level (revoke the API result, ban the realm session). The economics: bounded per-call amounts make the fraud window smaller than a card chargeback by orders of magnitude.
+In settle-first mode a double-spend is simply a rejected payment. In accept-then-settle mode, if settlement later fails the service's recourse is service-level (revoke the API result, ban the realm session); the economics — bounded per-call amounts — make that fraud window smaller than a card chargeback by orders of magnitude, but it is the service's risk to take, not the protocol's promise.
 
 ## Open questions for RFC
 

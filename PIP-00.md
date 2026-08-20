@@ -70,6 +70,7 @@ Carrying `r` in the token is safe: `r` only links `B_`/`C_` to `Y`/`C` for someo
 
 ## 4. Requirements
 
-- Blinding factors and DLEQ nonces MUST come from a CSPRNG and MUST NOT be reused.
+- Blinding factors MUST come from a CSPRNG and MUST NOT be reused.
+- DLEQ nonces `w` MUST be either CSPRNG-drawn or derived deterministically from the signing key and `B_` (RFC 6979 style — the reference implementation uses `HMAC-SHA256(k, "picocash-dleq-nonce" || B_)`). A biased or repeated `w` reveals `k`; deterministic derivation removes the RNG from that path entirely.
 - Verifiers MUST reject points at infinity and non-canonical scalar encodings (`0` or `≥ n`).
 - All hash-to-curve, blind/unblind, and DLEQ operations MUST reproduce the published test vectors, which include the upstream Cashu NUT-00/NUT-12 vectors.

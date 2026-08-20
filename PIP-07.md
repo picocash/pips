@@ -18,6 +18,7 @@ The link itself remains a bearer credential, like the token. Burn-after-read and
 
 - `<relay-origin>`: the relay's HTTPS origin (a mint MAY run a relay, but the relay is a separate capability — wallets MAY use any relay, and a mint is not required to run one).
 - `<id>`: 16 random bytes, base64url without padding (22 chars). Unguessable; the relay MUST generate it, never the client.
+- `<relay-origin>` MUST be `https://`. The fragment never leaves the client, but the path (and thus the `id`) does, and a plaintext-HTTP relay lets an on-path attacker race the recipient to the burn-after-read fetch. Wallets MUST refuse to create or resolve `http://` links, with a single exception for loopback hosts (`localhost`, `127.0.0.1`, `[::1]`) during development.
 - `<key>`: 32 random bytes, base64url without padding (43 chars) — the AES-256-GCM key, **in the fragment only**.
 
 ## Encryption (client side)
