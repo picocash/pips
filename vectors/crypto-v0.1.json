@@ -1,0 +1,139 @@
+{
+  "version": "0.1",
+  "curve": "secp256k1",
+  "spec": "spec/01-crypto.md",
+  "notes": "All byte strings are lowercase hex; points are 33-byte SEC1 compressed. Secrets and hash_to_curve messages are raw bytes (hex-decoded) EXCEPT cashu_compat.dleq.proof.secret_utf8, which is a UTF-8 string per upstream NUT-12. Never reuse these keys, factors, or nonces outside tests. cashu_compat reproduces upstream vectors from github.com/cashubtc/nuts/tree/main/tests.",
+  "cashu_compat": {
+    "hash_to_curve": [
+      {
+        "message": "0000000000000000000000000000000000000000000000000000000000000000",
+        "point": "024cce997d3b518f739663b757deaec95bcd9473c30a14ac2fd04023a739d1a725"
+      },
+      {
+        "message": "0000000000000000000000000000000000000000000000000000000000000001",
+        "point": "022e7158e11c9506f1aa4248bf531298daa7febd6194f003edcd9b93ade6253acf"
+      },
+      {
+        "message": "0000000000000000000000000000000000000000000000000000000000000002",
+        "point": "026cdbe15362df59cd1dd3c9c11de8aedac2106eca69236ecd9fbe117af897be4f"
+      }
+    ],
+    "blinded_messages": [
+      {
+        "secret": "d341ee4871f1f889041e63cf0d3823c713eea6aff01e80f1719f08f9e5be98f6",
+        "r": "99fce58439fc37412ab3468b73db0569322588f62fb3a49182d67e23d877824a",
+        "B_": "033b1a9737a40cc3fd9b6af4b723632b76a67a36782596304612a6c2bfb5197e6d"
+      },
+      {
+        "secret": "f1aaf16c2239746f369572c0784d9dd3d032d952c2d992175873fb58fae31a60",
+        "r": "f78476ea7cc9ade20f9e05e58a804cf19533f03ea805ece5fee88c8e2874ba50",
+        "B_": "029bdf2d716ee366eddf599ba252786c1033f47e230248a4612a5670ab931f1763"
+      }
+    ],
+    "blind_signatures": [
+      {
+        "mint_privkey": "0000000000000000000000000000000000000000000000000000000000000001",
+        "B_": "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+        "C_": "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2"
+      },
+      {
+        "mint_privkey": "7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f7f",
+        "B_": "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+        "C_": "0398bc70ce8184d27ba89834d19f5199c84443c31131e48d3c1214db24247d005d"
+      }
+    ],
+    "dleq": {
+      "blind_signature": {
+        "mint_pubkey": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "B_": "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+        "C_": "02a9acc1e48c25eeeb9289b5031cc57da9fe72f3fe2861d264bdc074209b107ba2",
+        "e": "9818e061ee51d5c8edc3342369a554998ff7b4381c8652d724cdf46429be73d9",
+        "s": "9818e061ee51d5c8edc3342369a554998ff7b4381c8652d724cdf46429be73da",
+        "valid": true
+      },
+      "proof": {
+        "mint_pubkey": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "secret_utf8": "daf4dd00a2b68a0858a80450f52c8a7d2ccf87d375e43e216e0c571f089f63e9",
+        "C": "024369d2d22a80ecf78f3937da9d5f30c1b9f74f0c32684d583cca0fa6a61cdcfc",
+        "e": "b31e58ac6527f34975ffab13e70a48b6d2b0d35abc4b03f0151f09ee1a9763d4",
+        "s": "8fbae004c59e754d71df67e392b6ae4e29293113ddc2ec86592a0431d16306d8",
+        "r": "a6d13fcd7a18442e6076f5e1e7c887ad5de40a019824bdfa9fe740d302e8d861",
+        "valid": true
+      }
+    }
+  },
+  "picocash": {
+    "hash_to_curve": [
+      {
+        "description": "empty message",
+        "message": "",
+        "point": "0204f5901f3e54cb4fd76bee23c83ca4f965b7009b74b3572f455ab90d88e6cbfe"
+      },
+      {
+        "description": "ascii \"picocash\"",
+        "message": "7069636f63617368",
+        "point": "020e06ff6880d18568005ab97b155924546c6a0cfd0a2ba73c6a7267389295e5e7"
+      },
+      {
+        "description": "32 bytes 0xff",
+        "message": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "point": "0229472e74fb9a064eea0ce3485c2b59b6f81ae8b71cfbfc5c50fac9ef465ea7ff"
+      },
+      {
+        "description": "PC-BIND structured secret (canonical JSON, utf-8)",
+        "message": "5b2250432d42494e44222c7b226e6f6e6365223a2262376532633161306439346636653338313261613035633437646239663165366237653263316130643934663665333831326161303563343764623966316536222c227265616c6d223a226170692e6578616d706c652e646576222c2273616c74223a2235663164306333623261343936383765356631643063336232613439363837653566316430633362326134393638376535663164306333623261343936383765227d5d",
+        "point": "022cc3e3a2d20fcbd51e353c5cb87023cf1b8b84797a7da35436929127a3b589c3"
+      }
+    ],
+    "bdhke_dleq_round_trips": [
+      {
+        "description": "rt-0",
+        "secret": "7069636f63617368207465737420766563746f72207365637265742030",
+        "mint_privkey": "381da8dc3a95a5e11af7573f04486186b2167f4b8d46ed80a344a867a1756658",
+        "mint_pubkey": "0383f992f00c2599b074bb44bffdabb794b6a585869af6c0ce4dd7882ca8f131b4",
+        "r": "4336c46310b268fe5b39102e4a9fd62d020d935780843f40e6fc9dc23b9c935f",
+        "Y": "02a8ae381648a930f135d311a0638291ff8eae4589962ae7db7c13de283619f237",
+        "B_": "032554e548f415b8757f0016184db3dd5281859b1a16aeaff8d16403b4f92d73b1",
+        "C_": "03e986d4897b792d63999e04e2803af06064b40c7f6e9a2a8604f1efa69007b370",
+        "C": "02f625985a3f525cbdaa3c189eb68359d928335dd2e38a50e7691fe4f72a42ed35",
+        "dleq_nonce": "56595017c09f9e3b7fce4993347b0bff4056add8293cf57aeaba3c627abb2dc0",
+        "dleq": {
+          "e": "583bc83da0044fa85c085e67a2b202361802bef138a872b5a53e90ebdce6f5aa",
+          "s": "9a4784fe89b551341321552bb244f9702d9b714bac4193d3707ac94a4b2a6c3d"
+        }
+      },
+      {
+        "description": "rt-1",
+        "secret": "5b2250432d42494e44222c7b226e6f6e6365223a223030222c227265616c6d223a22766563746f722e74657374222c2273616c74223a223031227d5d",
+        "mint_privkey": "844c11048ebb944d867eecc47e428ad49c9c365d9e68ae04f742f8626acded68",
+        "mint_pubkey": "02a72fb51ee9e29228d5f9c56b785ef4cd21027e953b263e90b4da528acdd30c18",
+        "r": "9d413e457368125b058285bd1f1e6399c0504a944c8de3598e1948da3b3cffbd",
+        "Y": "02aa77ad897a5d79cbdc380f0867da6052ebf0ca57fc381a0bececc10997e468ff",
+        "B_": "031d1a0a382dc71feed8cf010d8854a849769a92b1e36945a9de509763f0e5dd79",
+        "C_": "02a28cdab743921f63fb897508260c083bf5351b7006cfd936a1a3661b83f7f687",
+        "C": "03b63979e0530914f71879e6bfb683c4b9f2dfd9a04fc9e91dd952effc98b18d1c",
+        "dleq_nonce": "0ae3be0b9dc8257364df24586e368510cceac95df256349b65cb2f9444db6a88",
+        "dleq": {
+          "e": "4269308b2d8dd836c54c687f51ea94d71fc2b5ceb55a8371293e194e2aba573a",
+          "s": "f180841415133db48606235fd18abd0f388747c64d13cc650436d9f373663704"
+        }
+      },
+      {
+        "description": "rt-2",
+        "secret": "deadbeef",
+        "mint_privkey": "5fef4214d1c537b47c61de26ba68e8eacb9b15bce81f38153105ce39db015dd5",
+        "mint_pubkey": "02e62be05e969bcb0c2f867f634b292d73de5ca448d17f19dbe9f0a4c4e729472d",
+        "r": "ddebdfee14670558730e2c9b26e266244f3f6a93744e5a08ca8abbe2289a7d24",
+        "Y": "024857bd2a64edc1737d20c76de23d87d6c5aa88a5a82ad0c5c278ced2e259f492",
+        "B_": "03012170e01326be041ae720983e1079b2455b580170aa8b6f6e9e83dfefa1a6aa",
+        "C_": "0352f29220f5afa1356fd390e1c3daac2742f23c8b0abdbe91c198ae697e02d83c",
+        "C": "02d28faa2794f446eb056819fd5dcb29e93893c0644f5e02ef76b62ab6c0776e2d",
+        "dleq_nonce": "43623c39823f70bc688a087fb3a4892d926633cd71c08c4f9a6fe20a42e7ce2d",
+        "dleq": {
+          "e": "0aa2b2f9e0322eef3bab971e4cd89601747ea27efa5785c668ec58fe33e0c50b",
+          "s": "6d188b632441028827d7c4058e5208eed0124b1ada63a270ebe9dd9ca59d2d34"
+        }
+      }
+    ]
+  }
+}
