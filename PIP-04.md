@@ -19,8 +19,8 @@ The primary deposit flow needs no vault call at all: a TIP-20 `transferWithMemo(
 
 Settled design constraints the implementation honors:
 
-- Holds **USDC.e on Tempo** (TIP-20 `0x20C0000000000000000000000000000000000000` on mainnet — confirm current address before deployment) backing outstanding tokens 1:1.
-- `ecashMint(amount, mintQuoteId)` — pulls USDC.e via `transferWithMemo` pattern; the memo binds the deposit to a mint quote; emits the event the mint watches before releasing blind signatures.
+- Holds **the unit's TIP-20 stablecoin** (e.g. USDC.e on mainnet; pathUSD on Moderato testnet) backing outstanding tokens 1:1 — the token is an immutable constructor parameter, one vault per token.
+- `ecashMint(amount, mintQuoteId)` — pulls the backing token via the `transferWithMemo` pattern; the memo binds the deposit to a mint quote; emits the event the mint watches before releasing blind signatures.
 - `ecashMelt(to, amount, meltId)` — mint-operator-signed release for melts.
 - **Solvency invariant**: vault balance ≥ outstanding token supply per keyset. Outstanding supply is published **on-chain per epoch**, so anyone can verify solvency — proof of liabilities beats "trust me".
 - Operator key rotation is **timelocked**. Deposits are pausable; **withdrawals are never pausable** — holders must always be able to exit.

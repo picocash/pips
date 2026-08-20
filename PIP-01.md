@@ -4,7 +4,7 @@
 
 ## Denominations
 
-Powers of 2 in **USDC.e base units** (6 decimals): `1, 2, 4, …, 2^30` µUSDC.e (≈ $1073 max single denomination). All amounts are integers; a mint MAY support fewer denominations and MUST publish exactly which via `/v1/keys`.
+Powers of 2 in **the unit token's base units**: `1, 2, 4, …, 2^30` (TIP-20 stablecoins use 6 decimals — e.g. USDC.e or pathUSD — making 2^30 ≈ $1073 the max single denomination). All amounts are integers; a mint MAY support fewer denominations and MUST publish exactly which via `/v1/keys`.
 
 ## Unit
 
