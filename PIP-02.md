@@ -39,7 +39,7 @@ DLEQ on issuance is REQUIRED ([PIP-00](PIP-00.md) §3).
 
 ### `GET /v1/info`
 
-Mint metadata: `name`, `version`, `unit`, `keysets` (ids + state), `limits` (`max_mint_amount`), `fees` (`{ melt }`, base units — the flat per-melt fee), `melt` (whether a payout executor is configured), `vault` (`{ method, chain_id, token, deposit_address }`, or `"fake"` in dev), `contact`.
+Mint metadata: `name`, `version`, `unit`, `keysets` (ids + state), `limits` (`max_mint_amount`), `fees` (`{ melt }`, base units — the flat per-melt fee), `melt` (whether a payout executor is configured), `relay` (PIP-07 token-link relay capability: `{ enabled, max_bytes, ttl_seconds }`), `vault` (`{ method, chain_id, token, deposit_address }`, or `"fake"` in dev), `contact`.
 
 ### `GET /v1/keys` · `GET /v1/keys/{keyset_id}`
 
