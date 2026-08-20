@@ -19,6 +19,7 @@ picocash is private, instant eCash for machine payments: Chaumian blind-signatur
 | [PIP-04](PIP-04.md) | Vault, factory & custody | RFC (v0.1-draft) |
 | [PIP-05](PIP-05.md) | MPP payment method `picocash` | RFC (draft) |
 | [PIP-06](PIP-06.md) | Token serialization (`picoA…`) | RFC (v0.1-draft) |
+| [PIP-07](PIP-07.md) | Token links — encrypted relay (optional) | RFC (v0.1-draft) |
 | [vectors/](vectors/) | Published test vectors | v0.1 |
 
 **Statuses**: `draft` (shape may change freely) → `RFC` (implemented in the reference stack, feedback actively sought) → `frozen` (breaking changes need a new PIP). Everything here is RFC or earlier — nothing is frozen yet, which is exactly why now is the cheap time to object.
