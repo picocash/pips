@@ -98,6 +98,10 @@ Response `{ "signatures": [BlindSignature…] }`.
 
 The liability side of the solvency check (operator-attested, see PIP-04), public: `{ "keyset_id", "unit", "outstanding", "vault": { "chain_id", "address", "token" } }` where `outstanding = Σ issued blind signatures − Σ spent secrets` (swaps are neutral; mints issue; melts spend). Anyone can compare `outstanding` to the vault's on-chain token balance; the mint's operator publishes the same figure on-chain per epoch via `vault.publishOutstandingSupply`. A mint MAY cap outstanding supply (`AMOUNT_LIMIT` at quote time, reference mints MUST).
 
+### `GET /v1/status` and `GET /` (transparency, RECOMMENDED)
+
+A mint SHOULD expose `GET /v1/status`: its own books (`outstanding`, `reserved`, Σ deposits, Σ payouts, fees retained, unpaid melt debt), the vault's on-chain state (balance, last attestation, policy, fee ceiling, emergency-redemption status), a recent ledger of PAID mint quotes (amount, quote id = memo, deposit tx) and melts (amount, fee, payout tx), and a list of **checks** — statements that should hold, each with `ok` and the numbers behind it: backing ≥ outstanding; attested outstanding ≈ books; attestation within the interval; Σ deposits − Σ payouts ≈ vault balance; melt fee ≤ `maxMeltFee`; unilateral exit armed (grace > 0, keyset registered); no unpaid melt debt. `GET /` with `Accept: text/html` SHOULD render it for people. A mint is a custodian; the point of this page is that any drift between its books and the chain is visible immediately, by anyone, without tooling. The ledger MUST NOT add information the chain does not already carry (no payer addresses beyond what the deposit tx shows).
+
 ### `POST /v1/checkstate`
 
 Request `{ "Ys": ["02…", …] }` — `Y = hash_to_curve(secret)` values, never secrets. Response `{ "states": [ { "y": "02…", "state": "UNSPENT" | "SPENT" } ] }` (`PENDING` reserved for melt, [PIP-03](PIP-03.md)).
