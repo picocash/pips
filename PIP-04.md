@@ -71,7 +71,7 @@ What this does **not** solve: a malicious operator who lies in the last attestat
 
 Measured (Foundry): **≈2.1 M gas per plain proof, ≈2.35 M per P2PK-locked proof** (the Schnorr check adds one more double-scalar multiplication). On Moderato a six-proof redemption cost ≈ $0.017 in total — acceptable for an exit path used once, and a redeemer holding many small denominations batches them in one call. Tempo's receipts report a higher gas figure than the EVM reference (its own state pricing); the fee is what matters. Obvious optimisations, none needed for correctness: fold `s·G − e·K` into the `ecrecover` trick (saves one multiplication — but the *point* is needed for `hashE`, not just its address, so only `R1` can use it), wNAF windows, and a hypothetical secp256k1 precompile.
 
-### Interface (vault v2)
+### Interface (vault v2+, current v3)
 
 ```solidity
 function registerKeyset(bytes8 keysetId, uint256[] calldata amounts, bytes[] calldata pubkeys) external; // operator, append-only
