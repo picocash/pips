@@ -50,9 +50,16 @@ The wallet appends `#<key>` to `url` locally to form the link. The relay never s
 
 Response `{ "ct": "<blob>" }` **exactly once**: the relay MUST delete the blob on first successful read (burn-after-read) and MUST delete it at `expires_at` if never read. Subsequent reads → 404 `RELAY_NOT_FOUND`. This is why senders MUST keep their own copy of the token until the recipient confirms receipt — a link lost in transit loses nothing.
 
-### `GET /t/{id}` (browser convenience, OPTIONAL)
+### `GET /t/{id}` (browser handling, OPTIONAL)
 
-When a person pastes the link into a browser, the relay MAY redirect to a wallet UI (e.g. `302 → https://picocash.dev/demo/?link=<relay-origin>/t/<id>`). Browsers preserve the `#<key>` fragment across the redirect, so the key still never touches a server. Relays that don't serve a UI simply return a JSON pointer to the API.
+When a person opens a link in a browser, the relay SHOULD serve a **reveal page** (content-negotiated on `Accept: text/html`; other clients get a JSON pointer `{ "link", "resolve" }`). The page:
+
+- MUST NOT fetch `/v1/relay/{id}` on load. The blob is read only after an explicit user action ("Reveal"). This is what keeps link-preview bots, mail scanners, and accidental opens from burning a one-time link — a preview fetch sees an inert HTML page and nothing is consumed.
+- MUST decrypt client-side with the key from the fragment (the browser never sends the fragment), render the token as text (never markup), offer a copy action, and tell the user the link is now used up.
+- SHOULD remove the fragment from the address bar and history after reveal (`history.replaceState`), be served with `Cache-Control: no-store`, `Referrer-Policy: no-referrer`, `noindex`, and a CSP that permits only same-origin connections.
+- MAY offer "Open in wallet": before reveal, by handing the *unconsumed* link (`<wallet>?link=<pointer>#<key>`) to a configured wallet UI; after reveal, by passing the token itself in a fragment (`<wallet>#token=<token>`). The reference mint configures this with `PICOCASH_RELAY_UI`.
+
+The reference relay serves a self-contained page (no external assets), so any mint's links work without a website.
 
 ## Client behavior
 
