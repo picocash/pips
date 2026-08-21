@@ -36,6 +36,7 @@ Issued by the service (in the MPP challenge envelope, `method: "picocash"`):
   "mints": [                              // allowlist the service will accept
     { "url": "https://mint.picocash.app", "keyset_ids": ["…"] }
   ],
+  "pubkey": "02…",                         // OPTIONAL: service P2PK lock key (PIP-08 binding)
   "expiry": 1755630000                    // unix seconds
 }
 ```
@@ -71,7 +72,7 @@ In order, all MUST pass:
 
 1. `challenge_id` known, unexpired, never previously accepted (single-use).
 2. Mint URL and `keyset_id` in the service's allowlist; keyset keys already cached from `/v1/keys`; and the **keyset's `unit` equals the challenge's `unit`** — an equal base-unit number in a different TIP-20 token is not payment.
-3. Each proof's secret parses as `PC-BIND` and commits to this challenge's `nonce` and `realm`.
+3. Each proof's secret is bound to this service: it parses as `PC-BIND` and commits to this challenge's `nonce` and `realm`, **or** ([PIP-08](PIP-08.md)) it is P2PK-locked to the challenge's `pubkey` with ≥ 60 s of lock remaining and `n_sigs = 1`.
 4. Amounts sum to exactly `amount`; each amount is a valid denomination of the keyset.
 5. **DLEQ verifies** for each proof against the cached keyset key for its denomination ([PIP-00](PIP-00.md) §3).
 6. No duplicate `Y = hash_to_curve(secret)` within the credential or against previously accepted credentials.

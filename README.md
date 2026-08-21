@@ -20,6 +20,7 @@ picocash is private, instant eCash for machine payments: Chaumian blind-signatur
 | [PIP-05](PIP-05.md) | MPP payment method `picocash` | RFC (draft) |
 | [PIP-06](PIP-06.md) | Token serialization (`picoA…`) | RFC (v0.1-draft) |
 | [PIP-07](PIP-07.md) | Token links — encrypted relay (optional) | RFC (v0.1-draft) |
+| [PIP-08](PIP-08.md) | Spending conditions — P2PK locks | RFC (v0.1-draft) |
 | [vectors/](vectors/) | Published test vectors | v0.1 |
 
 **Statuses**: `draft` (shape may change freely) → `RFC` (implemented in the reference stack, feedback actively sought) → `frozen` (breaking changes need a new PIP). Everything here is RFC or earlier — nothing is frozen yet, which is exactly why now is the cheap time to object.
@@ -33,6 +34,7 @@ The reference stack ([picocash](https://github.com/picocash/picocash) + [picocas
 - **Insert-before-sign / insert-before-pay** (PIP-02/03): no signature and no payout ever exists before the corresponding spend is durably recorded.
 - **The exit guarantee** (PIP-03/04): payouts cannot be paused by the contract (operator liveness is still required); each melt pays out exactly once (`meltPaid`); the exit fee is capped by the vault's committed `maxMeltFee`; raising that cap takes the same public timelock as rotating custody keys.
 - **Attested liabilities with teeth** (PIP-04): outstanding supply is an operator attestation, published on-chain and checkable against the vault balance; vaults commit at deployment to a solvency-publication policy — miss the attestation interval and the vault stops accepting deposits until the mint publishes again.
+- **Lockable tokens** (PIP-08): a proof can be locked to a public key (with locktime + refund), so a merchant can pay *this* agent only, and a human can fund an agent that can spend *only with this merchant* — NUT-11 wire-compatible.
 - **Challenge-bound credentials** (PIP-05): payment secrets commit to the challenge nonce and realm (`PC-BIND`), so an intercepted credential replays nowhere.
 
 ## Contributing

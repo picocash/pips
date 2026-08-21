@@ -28,7 +28,8 @@ A **token** is a bundle of proofs handed from one holder to another — over a c
           "a": 524288,                  // amount (base units)
           "s": "<secret, hex>",
           "c": "<C, 33-byte compressed point, hex>",
-          "d": { "e": "…", "s": "…", "r": "…" }   // DLEQ payload (PIP-00 §3) — REQUIRED
+          "d": { "e": "…", "s": "…", "r": "…" },  // DLEQ payload (PIP-00 §3) — REQUIRED
+          "w": "{\"signatures\":[…]}"            // OPTIONAL PIP-08 witness (signed locked proof)
         }
       ]
     }

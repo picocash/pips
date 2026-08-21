@@ -14,14 +14,14 @@ Every error is:
 { "error": { "code": "TOKEN_ALREADY_SPENT", "message": "…", "recovery": "…" } }
 ```
 
-`recovery` is mandatory and tells the calling agent what to do next (a9n9 convention). Codes used below: `INVALID_REQUEST`, `QUOTE_NOT_FOUND`, `QUOTE_EXPIRED`, `PAYMENT_REQUIRED`, `QUOTE_ALREADY_ISSUED`, `TOKEN_ALREADY_SPENT`, `OUTPUT_ALREADY_SIGNED`, `KEYSET_UNKNOWN`, `KEYSET_INACTIVE`, `AMOUNT_MISMATCH`, `INVALID_PROOF`, `AMOUNT_LIMIT`, `MELT_ALREADY_PAID`, `PAYOUT_FAILED`, `NOT_IMPLEMENTED`.
+`recovery` is mandatory and tells the calling agent what to do next (a9n9 convention). Codes used below: `INVALID_REQUEST`, `QUOTE_NOT_FOUND`, `QUOTE_EXPIRED`, `PAYMENT_REQUIRED`, `QUOTE_ALREADY_ISSUED`, `TOKEN_ALREADY_SPENT`, `OUTPUT_ALREADY_SIGNED`, `KEYSET_UNKNOWN`, `KEYSET_INACTIVE`, `AMOUNT_MISMATCH`, `INVALID_PROOF`, `AMOUNT_LIMIT`, `MELT_ALREADY_PAID`, `PAYOUT_FAILED`, `NOT_IMPLEMENTED`, `SPENDING_CONDITION_FAILED` ([PIP-08](PIP-08.md)).
 
 ## Objects
 
 **Proof** (a spendable token unit):
 
 ```jsonc
-{ "amount": 4096, "keyset_id": "00a1…", "secret": "<hex>", "C": "02…" }
+{ "amount": 4096, "keyset_id": "00a1…", "secret": "<hex, ≤ 1024 bytes>", "C": "02…", "witness": "<OPTIONAL, PIP-08 spending-condition witness>" }
 ```
 
 (The DLEQ payload `{e, s, r}` travels with tokens between agents/services but the mint does not require it — the mint verifies with its private key.)
@@ -96,7 +96,7 @@ Response `{ "signatures": [BlindSignature…] }`.
 
 ### `GET /v1/solvency`
 
-The liability side of proof of liabilities, public: `{ "keyset_id", "unit", "outstanding", "vault": { "chain_id", "address", "token" } }` where `outstanding = Σ issued blind signatures − Σ spent secrets` (swaps are neutral; mints issue; melts spend). Anyone can compare `outstanding` to the vault's on-chain token balance; the mint's operator publishes the same figure on-chain per epoch via `vault.publishOutstandingSupply`. A mint MAY cap outstanding supply (`AMOUNT_LIMIT` at quote time, reference mints MUST).
+The liability side of the solvency check (operator-attested, see PIP-04), public: `{ "keyset_id", "unit", "outstanding", "vault": { "chain_id", "address", "token" } }` where `outstanding = Σ issued blind signatures − Σ spent secrets` (swaps are neutral; mints issue; melts spend). Anyone can compare `outstanding` to the vault's on-chain token balance; the mint's operator publishes the same figure on-chain per epoch via `vault.publishOutstandingSupply`. A mint MAY cap outstanding supply (`AMOUNT_LIMIT` at quote time, reference mints MUST).
 
 ### `POST /v1/checkstate`
 
