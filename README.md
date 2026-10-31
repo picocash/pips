@@ -21,6 +21,7 @@ picocash is private, instant eCash for machine payments: Chaumian blind-signatur
 | [PIP-06](PIP-06.md) | Token serialization (`picoA…`) | RFC (v0.1-draft) |
 | [PIP-07](PIP-07.md) | Token links — encrypted relay (optional) | RFC (v0.1-draft) |
 | [PIP-08](PIP-08.md) | Spending conditions — P2PK locks | RFC (v0.1-draft) |
+| [PIP-09](PIP-09.md) | Nostr identity binding & the engram wallet (agents on Buzz) | RFC (v0.1-draft) |
 | [vectors/](vectors/) | Published test vectors | v0.1 |
 
 **Statuses**: `draft` (shape may change freely) → `RFC` (implemented in the reference stack, feedback actively sought) → `frozen` (breaking changes need a new PIP). Everything here is RFC or earlier — nothing is frozen yet, which is exactly why now is the cheap time to object.
@@ -33,6 +34,7 @@ The reference stack ([picocash](https://github.com/picocash/picocash) + [picocas
 - **The unit is the token contract** (PIP-01): `tip20:<chain_id>:<address>` — keyset keys and ids derive from it, and the mint refuses to run unless the vault's on-chain token binding agrees.
 - **Insert-before-sign / insert-before-pay** (PIP-02/03): no signature and no payout ever exists before the corresponding spend is durably recorded.
 - **The exit guarantee** (PIP-03/04): payouts cannot be paused by the contract (operator liveness is still required); each melt pays out exactly once (`meltPaid`); the exit fee is capped by the vault's committed `maxMeltFee`; raising that cap takes the same public timelock as rotating custody keys.
+- **Agents pay with the key they already have** (PIP-09): a Nostr npub is a P2PK lock key; the wallet lives as an owner-readable NIP-AE engram on the agent's relay; owners fund agents with time-boxed, merchant-restricted budgets instead of API keys.
 - **Withdrawal breaker** (PIP-04): operator payouts are capped per epoch on-chain; consuming the allowance latches the vault — no more operator payouts or deposits, and the holder exit opens immediately. Theft becomes slow, visible, bounded, and escapable. Live on Moderato.
 - **Unilateral exit** (PIP-04): if a mint goes silent past its attestation interval plus a grace period, holders redeem at the vault directly — the vault verifies each token's DLEQ and P2PK lock on-chain with the mint's *public* key. Live on Moderato.
 - **Attested liabilities with teeth** (PIP-04): outstanding supply is an operator attestation, published on-chain and checkable against the vault balance; vaults commit at deployment to a solvency-publication policy — miss the attestation interval and the vault stops accepting deposits until the mint publishes again.
